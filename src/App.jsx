@@ -182,7 +182,7 @@ export default function App() {
           {/* 생활안전지도 WMS - 공기주입기 레이어 */}
           {layers.airPump && (
             <WMSTileLayer
-  url="https://www.safemap.go.kr/openApiService/wms/getLayerData.do"
+            url="https://www.safemap.go.kr/openApiService/wms/getLayerData.do"
   layers="A2SM_BIKE"
   format="image/png"
   transparent={true}
@@ -191,7 +191,7 @@ export default function App() {
   attribution="생활안전지도"
   params={{
     apikey: "FNNBI09I-FNNB-FNNB-FNNB-FNNBI09I0F",
-    SRS: "EPSG:3857",
+    SRS: "EPSG:4326",
   }}
 />
           )}
