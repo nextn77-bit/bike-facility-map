@@ -91,22 +91,23 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const url = `https://api.odcloud.kr/api/15017319/v1/uddi:72ed8c3c-f935-4b09-8b2e-f8c4bb6e5f3c?page=1&perPage=100&serviceKey=${encodeURIComponent(key)}`;
+      const url = `/api/proxy?serviceKey=${encodeURIComponent(key)}&pageNo=1&numOfRows=100&type=xml`;
       const res = await fetch(url);
-      const json = await res.json();
-      if (json.data) {
-        const stations = json.data
-          .filter((d) => d["위도"] && d["경도"])
-          .map((d) => ({
-            id: d["관리번호"] || Math.random(),
-            name: d["대여소명"] || d["시설명"] || t.rentalStation,
-            addr: d["소재지도로명주소"] || d["소재지지번주소"] || "",
-            lat: parseFloat(d["위도"]),
-            lng: parseFloat(d["경도"]),
-            tel: d["전화번호"] || "",
-          }));
-        setRentalStations(stations);
-      }
+      const text = await res.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, "text/xml");
+      const items = xml.querySelectorAll("item");
+      const stations = Array.from(items)
+        .filter((item) => item.querySelector("위도") && item.querySelector("경도"))
+        .map((item) => ({
+          id: item.querySelector("관리번호")?.textContent || Math.random(),
+          name: item.querySelector("대여소명")?.textContent || item.querySelector("시설명")?.textContent || t.rentalStation,
+          addr: item.querySelector("소재지도로명주소")?.textContent || item.querySelector("소재지지번주소")?.textContent || "",
+          lat: parseFloat(item.querySelector("위도")?.textContent),
+          lng: parseFloat(item.querySelector("경도")?.textContent),
+          tel: item.querySelector("전화번호")?.textContent || "",
+        }));
+      setRentalStations(stations);
     } catch (e) {
       setError(t.fetchError);
     } finally {
@@ -179,17 +180,21 @@ export default function App() {
           />
 
           {/* 생활안전지도 WMS - 공기주입기 레이어 */}
-          {layers.airPump && (
+          {/* {layers.airPump && (
             <WMSTileLayer
               url="https://www.safemap.go.kr/openApiService/wms/getLayerData.do"
-              layers="A2SM_BICYCLEROUT"
+              layers="A2SM_BIKE"
               format="image/png"
               transparent={true}
               version="1.1.1"
               opacity={0.85}
               attribution="생활안전지도"
+              params={{
+                TILED: true,
+                SRS: "EPSG:4326",
+              }}
             />
-          )}
+          )} */}
 
           {/* 자전거 대여소 마커 */}
           {layers.rental &&
