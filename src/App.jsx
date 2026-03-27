@@ -180,21 +180,21 @@ export default function App() {
           />
 
           {/* 생활안전지도 WMS - 공기주입기 레이어 */}
-          {/* {layers.airPump && (
+          {layers.airPump && (
             <WMSTileLayer
-              url="https://www.safemap.go.kr/openApiService/wms/getLayerData.do"
-              layers="A2SM_BIKE"
-              format="image/png"
-              transparent={true}
-              version="1.1.1"
-              opacity={0.85}
-              attribution="생활안전지도"
-              params={{
-                TILED: true,
-                SRS: "EPSG:4326",
-              }}
-            />
-          )} */}
+  url="https://www.safemap.go.kr/openApiService/wms/getLayerData.do"
+  layers="A2SM_BIKE"
+  format="image/png"
+  transparent={true}
+  version="1.1.1"
+  opacity={0.85}
+  attribution="생활안전지도"
+  params={{
+    apikey: "FNNBI09I-FNNB-FNNB-FNNB-FNNBI09I0F",
+    SRS: "EPSG:3857",
+  }}
+/>
+          )}
 
           {/* 자전거 대여소 마커 */}
           {layers.rental &&
